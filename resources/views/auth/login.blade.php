@@ -43,8 +43,13 @@
                                             <a href="{{ route('password.request') }}" class="text-muted">Lupa Password?</a>
                                         </div>
                                         <label class="form-label" for="password-input">Password</label>
-                                        <div class="position-relative auth-pass-inputgroup mb-3">
-                                            <input type="password" class="form-control pe-5 @error('password') is-invalid @enderror" placeholder="Isikan password anda" name="password" id="password-input">
+                                        <div class="position-relative input-group mb-3">
+                                            <input type="password" class="form-control @error('password') is-invalid @enderror" placeholder="Isikan password anda" name="password" id="password-input">
+                                            <div class="input-group-prepend">
+                                                <button class="btn btn-outline-primary text-decoration-none" type="button" type="button" id="password-toggle">
+                                                    <i class="ri-eye-fill align-middle"></i>
+                                                </button>
+                                            </div>
                                             @error('password')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
@@ -55,7 +60,7 @@
 
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="remember" id="auth-remember-check">
-                                        <label class="form-check-label" for="auth-remember-check">Remember me</label>
+                                        <label class="form-check-label" for="auth-remember-check">Ingat Saya</label>
                                     </div>
 
                                     <div class="mt-4">
@@ -91,6 +96,19 @@
         <!-- end container -->
     </div>
 @endsection
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            const togglePasswordBtn = document.querySelector('#password-toggle');
+            const passwordInput = document.querySelector('#password-input');
+
+            togglePasswordBtn.addEventListener('click', function(){
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+            });
+        });
+    </script>
+@endpush
 
 {{-- <x-guest-layout>
     <!-- Session Status -->

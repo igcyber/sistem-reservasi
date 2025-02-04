@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('phone')->after('name');
-            $table->string('photo')->nullable()->after('phone');
+            $table->string('image')->nullable()->after('phone');
         });
     }
 
