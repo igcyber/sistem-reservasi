@@ -7,42 +7,54 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
-                <a href="{{ route('users.create') }}" class="btn btn-primary waves-effect waves-light bx-pull-right">Tambah Pengguna</a>
-                <h5 class="card-title mb-0">Daftar Semua Pengguna</h5>
+                <a href="{{ route('reservations.create') }}" class="btn btn-primary waves-effect waves-light bx-pull-right">Tambah Reservasi</a>
+                <h5 class="card-title mb-0">Daftar Semua Reservasi</h5>
             </div>
             <div class="card-body">
-                <table id="usersTable" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                <table id="reservationsTable" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                     <thead>
                         <tr>
                             <th>No.</th>
-                            <th>Nama Lengkap</th>
-                            <th>Username</th>
-                            <th>Nomor Handphone</th>
-                            <th>Hak Akses</th>
-                            <th>Email</th>
+                            <th>Klien</th>
+                            <th>Konsultan</th>
+                            <th>Tanggal Reservasi</th>
+                            <th>Jam Mulai</th>
+                            <th>Jam Selesai</th>
+                            <th>Status Reservasi</th>
+                            <th>Status Pembayaran</th>
                             <th>Pilihan</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($users as $user )
+                        @foreach ($reservations as $reservation )
                         <tr>
                             <th style="text-align: center">
                                 {{ $loop->iteration }}
                             </th>
                             <td>
-                                {{ $user->name }}
+                                {{ $reservation->user->name ?? 'Klien Sudah Tidak Terdaftar' }}
                             </td>
                             <td>
-                                {{ $user->username }}
+                                {{ $reservation->consultant->name ?? 'Konsultan Sudah Tidak Terdaftar' }}
                             </td>
                             <td>
-                                {{ $user->phone }}
+                                {{ format_date($reservation->reservation_date) }}
                             </td>
                             <td>
-                                {{ $user->role->name }}
+                                {{ $reservation->start_time }}
                             </td>
                             <td>
-                                {{ $user->email }}
+                                {{ $reservation->end_time }}
+                            </td>
+                            <td>
+                                <span class="badge {{ getStatusBadge($reservation->reservation_status, 'reservation') }} text-uppercase">
+                                    {{ $reservation->reservation_status }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge {{ getStatusBadge($reservation->payment_status, 'payment') }} text-uppercase">
+                                    {{ $reservation->payment_status }}
+                                </span>
                             </td>
                             <td>
                                 <div class="dropdown d-inline-block">
@@ -51,15 +63,15 @@
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
                                         <li>
-                                            <a class="dropdown-item edit-item-btn" href="{{ route('users.edit', $user->id) }}">
+                                            <a class="dropdown-item edit-item-btn" href="{{ route('reservations.edit', $reservation->id) }}">
                                                 <i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit
                                             </a>
                                         </li>
                                         <li>
-                                            <button class="dropdown-item remove-item-btn" onclick="confirmDelete({{ $user->id }})">
+                                            <button class="dropdown-item remove-item-btn" onclick="confirmDelete({{ $reservation->id }})">
                                                 <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete
                                             </button>
-                                            <form id="delete-form-{{ $user->id }}" action="{{ route('users.destroy', $user->id) }}" method="POST" style="display: none;">
+                                            <form id="delete-form-{{ $reservation->id }}" action="{{ route('reservations.destroy', $reservation->id) }}" method="POST" style="display: none;">
                                                 @csrf
                                                 @method('DELETE')
                                             </form>
@@ -81,7 +93,7 @@
 @push('scripts')
 <script>
     $(document).ready(function(){
-        $('#usersTable').DataTable({
+        $('#reservationsTable').DataTable({
             responsive: true,
             language:{
                 search: "Cari Data :",

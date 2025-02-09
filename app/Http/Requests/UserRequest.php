@@ -27,7 +27,7 @@ class UserRequest extends FormRequest
             'phone' => ['required', 'string', 'max:15'],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users'],
-            'role_id' => ['required', 'integer']
+            'role_id' => ['integer']
         ];
     }
 }

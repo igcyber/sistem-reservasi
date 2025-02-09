@@ -17,6 +17,7 @@ class Reservation extends Model
         'end_time',
         'reservation_status',
         'total_amount',
+        'payment_status',
         'cancel_reason'
     ];
 

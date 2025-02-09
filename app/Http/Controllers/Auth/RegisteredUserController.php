@@ -36,12 +36,14 @@ class RegisteredUserController extends Controller
             'phone' => ['required', 'string', 'max:15'],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'max:8', 'min:6', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', 'min:6', 'confirmed', Rules\Password::defaults()],
         ]);
 
-       //upload image
-       $image = $request->file('image');
-       $image->storeAs('public/users', $image->hashName());
+        $imageName = null;
+        if($request->hasFile('image')){
+            $imagePath = $request->file('image')->store('public/users');
+            $imageName = basename($imagePath);
+        }
 
         $user = User::create([
             'name' => $request->name,
@@ -49,7 +51,7 @@ class RegisteredUserController extends Controller
             'phone' => $request->phone,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'image' => $image->hashName(),
+            'image' => $imageName,
             'role_id' => 3
         ]);
 

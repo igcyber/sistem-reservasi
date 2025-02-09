@@ -67,8 +67,8 @@
                 @if(Auth::user()->role_id == 1)
 
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="#">
-                        <i class="ri-honour-line"></i> <span data-key="t-widgets">Reservasi Baru</span>
+                    <a class="nav-link menu-link" href="{{ route('reservations.index') }}">
+                        <i class="ri-honour-line"></i> <span data-key="t-widgets">Kelola Reservasi</span>
                     </a>
                 </li>
                 <li class="nav-item">

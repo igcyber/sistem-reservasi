@@ -86,12 +86,10 @@
 
 
     <!--start back-to-top-->
-    <button onclick="topFunction()" class="btn btn-danger btn-icon" id="back-to-top">
+    <button onclick="topFunction()" class="btn btn-danger btn-icon" id="back-to-top" style="bottom: 26px;!important">
         <i class="ri-arrow-up-line"></i>
     </button>
     <!--end back-to-top-->
-
-
 
     <!-- JAVASCRIPT -->
     <script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
@@ -126,11 +124,49 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-
     <script src="{{ asset('assets/js/pages/datatables.init.js') }}"></script>
 
     <!-- App js -->
     <script src="{{ asset('assets/js/app.js') }}"></script>
+    {{-- Sweet alert --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    {{-- toastify --}}
+    @if(session('success'))
+    <script>
+        Toastify({
+            text: "{{ session('success') }}",
+            duration: 2000,
+            close: false,
+            gravity: "top", // `top` or `bottom`
+            position: "right", // `left`, `center` or `right`
+            style: {
+                background: "#0093E9"
+            },// Callback after click
+        }).showToast();
+    </script>
+    @endif
+
+    {{-- sweet alert  --}}
+    <script>
+        function confirmDelete(id){
+            Swal.fire({
+                title: "Hapus data berikut ?",
+                text: "Pastikan anda tidak menghapus data yang salah!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Hapus!",
+                cancelButtonText: "Batal!"
+                })
+                .then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('delete-form-' + id).submit();
+                    }
+                });
+        }
+    </script>
     @stack('scripts')
 </body>
 

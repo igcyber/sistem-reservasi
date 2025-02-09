@@ -2,16 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use Log;
+use Exception;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use PDO;
 
 class UserController extends Controller
 {
     protected static $base_route = 'users.index';
+    protected static $base_page_name = 'Kelola Pengguna';
 
     /**
      * Display a listing of the resource.
@@ -26,7 +31,8 @@ class UserController extends Controller
         return view('user.index', [
             'users' => $users,
             'base_route' => self::$base_route,
-            'current_route' => 'Daftar Semua Pengguna'
+            'base_page_name' => self::$base_page_name,
+            'current_page_name' => 'Daftar Semua Pengguna'
         ]);
     }
 
@@ -39,7 +45,8 @@ class UserController extends Controller
         return view('user.create',[
             'roles' => $roles,
             'base_route' => self::$base_route,
-            'current_route' => 'Tambah Pengguna Baru'
+            'base_page_name' => self::$base_page_name,
+            'current_page_name' => 'Tambah Pengguna Baru'
         ]);
     }
 
@@ -48,25 +55,40 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-        $request->validated();
+        try {
+            return DB::transaction(function () use ($request) {
 
-        //upload image
-        $image = $request->file('image');
-        $image->storeAs('public/users', $image->hashName());
+                // Check if an image is uploaded
+                $imageName = null;
+                if ($request->hasFile('image')) {
+                    $imagePath = $request->file('image')->store('public/users');
+                    $imageName = basename($imagePath); // Store only filename
+                }
 
-        $user = User::create([
-            'name' => $request->name,
-            'username' => $request->username,
-            'phone' => $request->phone,
-            'email' => $request->email,
-            'password' => Hash::make('password'),
-            'image' => $image->hashName(),
-            'role_id' => $request->role_id
-        ]);
+                // Create user directly
+                User::create([
+                    'name' => $request->name,
+                    'username' => $request->username,
+                    'phone' => $request->phone,
+                    'email' => $request->email,
+                    'password' => Hash::make('password'),
+                    'image' => $imageName, // Will be NULL if no image uploaded
+                    'role_id' => $request->role_id
+                ]);
 
-        if($user){
-            return redirect()->route('users.index')->with('success', 'Data Pengguna Berhasil Ditambah');
-        }else{
+                // Success Redirect with message
+                return redirect()->route('users.index')->with('success', 'Data Pengguna Berhasil Ditambah');
+            }, 3);
+        } catch (Exception $e) {
+            // If an image was uploaded but transaction fails, delete it
+            if (isset($imagePath) && Storage::exists($imagePath)) {
+                Storage::delete($imagePath);
+            }
+
+            // Log the error
+            Log::error('User creation failed: ' . $e->getMessage());
+
+            // Redirect with an error message
             return redirect()->route('users.index')->with('error', 'Data Pengguna Gagal Ditambah');
         }
     }
@@ -82,7 +104,8 @@ class UserController extends Controller
             'roles' => $roles,
             'user' => $user,
             'base_route' => self::$base_route,
-            'current_route' => 'Edit Pengguna'
+            'base_page_name' => self::$base_page_name,
+            'current_page_name' => 'Edit Pengguna'
         ]);
     }
 
@@ -91,49 +114,47 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', 'unique:users,username,'.$user->id],
             'phone' => ['required', 'string', 'max:15'],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email,'.$user->id],
-            'role_id' => ['required', 'integer']
+            'role_id' => ['integer']
         ]);
 
-        if($request->file('image') == ''){
-            $user->update([
-                'name' => $request->name,
-                'username' => $request->username,
-                'phone' => $request->phone,
-                'email' => $request->email,
-                'role_id' => $request->role_id
-            ]);
-        }else{
-            //delete image lama
-            Storage::disk('local')->delete('public/users' . basename($user->image) );
+        try{
+            return DB::transaction(function () use ($request, $user, $validatedData){
+                //Check if a new image is uploaded
+                if($request->hasFile('image')){
+                    //Delete old image if exists
+                    if ($user->image) {
+                        Storage::delete('public/users/' . basename($user->image));
+                    }
 
-            //upload image baru
-            $image = $request->file('image');
-            $image->storeAs('public/users', $image->hashName());
+                    //Upload new image
+                    $imagePath = $request->file('image')->store('public/users');
+                    $validatedData['image'] = basename($imagePath);
+                }
 
-            //update dengan image
-            $user->update([
-                'image' => $image->hashName(),
-                'name' => $request->name,
-                'username' => $request->username,
-                'phone' => $request->phone,
-                'email' => $request->email,
-                'role_id' => $request->role_id
-            ]);
+                // Update user with validated data
+                $user->update($validatedData);
 
-        }
+                // Success Redirect with message
+                return redirect()->route('users.index')->with('success', 'Data Pengguna Berhasil Diperbarui');
+            });
+        }catch(Exception $e){
+            // If an image was uploaded but transaction fails, delete it
+            if (isset($imagePath) && Storage::exists($imagePath)) {
+                Storage::delete($imagePath);
+            }
 
-        if($user){
-            return redirect()->route('users.index')->with('success', 'Data Pengguna Berhasil Diperbarui');
-        }else{
+            // Log the error
+            Log::error('User creation failed: ' . $e->getMessage());
+
+            // Redirect with an error message
             return redirect()->route('users.index')->with('error', 'Data Pengguna Gagal Diperbarui');
         }
-
 
 
     }
@@ -145,9 +166,6 @@ class UserController extends Controller
     {
         Storage::disk('local')->delete('public/users' . basename($user->image) );
         $user->delete();
-
-        $user->delete();
-
         return redirect()->route('users.index')->with('success', 'Data Pengguna Berhasil Dihapus');
 
     }
