@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Reservation extends Model
 {
@@ -31,5 +32,15 @@ class Reservation extends Model
 
     public function reservation_detail(){
         return $this->hasOne(ReservationDetail::class);
+    }
+
+    //Accessor start_time
+    public function getStartTimeAttribute($value){
+        return Carbon::parse($value)->format('H:i');
+    }
+
+    //Accessor end_time
+    public function getEndTimeAttribute($value){
+        return Carbon::parse($value)->format('H:i');
     }
 }

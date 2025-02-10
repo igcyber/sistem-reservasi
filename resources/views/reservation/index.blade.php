@@ -68,6 +68,11 @@
                                             </a>
                                         </li>
                                         <li>
+                                            <button type="button" class="dropdown-item btn-cancel" data-id="{{ $reservation->id }}">
+                                                <i class="ri-close-circle-fill align-bottom me-2 text-muted"></i> Cancel
+                                            </button>
+                                        </li>
+                                        <li>
                                             <button class="dropdown-item remove-item-btn" onclick="confirmDelete({{ $reservation->id }})">
                                                 <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete
                                             </button>
@@ -110,5 +115,68 @@
             }
         });
     })
+
+    $(document).on('click', '.btn-cancel', function(e){
+        e.preventDefault();
+        var reservationId = $(this).data('id');
+
+        Swal.fire({
+            title: "Batalkan Pesanan?",
+            text: "Pastikan anda mengkonfirmasi kembali ke pengguna!",
+            input: 'textarea',
+            inputPlaceholder: 'Isikan alasan pembatalan reservasi!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: "Konfirmasi Pembatalan!",
+            cancelButtonText: "Tutup!",
+            preConfirm: (cancellationReason) => {
+
+                if(!cancellationReason){
+                    Swal.showValidationMessage('Alasan pembatalan wajib diisi');
+                    return false;
+                }
+
+                return new Promise((resolve) => {
+                    $.ajax({
+                        url: "{{ route('reservations.cancel') }}",
+                        method: "POST",
+                        data:{
+                            _token: "{{ csrf_token() }}",
+                            reservation_id: reservationId,
+                            cancel_reason: cancellationReason,
+                        },
+                        success: function(response){
+                            if(response.success){
+                                Swal.fire({
+                                    title: 'Proses Selesai',
+                                    text: response.message,
+                                    icon: 'success',
+                                }).then(() => {
+                                    location.reload();
+                                })
+                            }else{
+                                Swal.fire({
+                                    title: 'Proses Berhenti',
+                                    text: response.message,
+                                    icon: 'error'
+                                });
+                            }
+                            resolve();
+                        },
+                        error: function(){
+                            Swal.fire({
+                                title: 'Terjadi Kesalahan',
+                                text: 'Gagal membatalkan reservasi',
+                                icon: 'error',
+                            });
+                            resolve();
+                        }
+                    });
+                });
+            }
+        });
+
+    });
+
 </script>
 @endpush

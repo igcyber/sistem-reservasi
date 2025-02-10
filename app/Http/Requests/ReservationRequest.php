@@ -26,7 +26,7 @@ class ReservationRequest extends FormRequest
             'consultant_id' => 'required|exists:users,id',
             'reservation_date' => 'required|date',
             'start_time' => 'required|date_format:H:i|after_or_equal:09:00|before_or_equal:15:00',
-            'end_time' => 'required|date_format:H:i|before_or_equal:16:00|after:start_time',
+            'end_time' => 'required|date_format:H:i',
             'reservation_status' => 'required|in:pending,confirmed,cancelled',
             'payment_status' => 'required|in:pending,paid,failed',
             'total_amount' => 'nullable|numeric|min:0',

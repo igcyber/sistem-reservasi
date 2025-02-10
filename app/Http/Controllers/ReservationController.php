@@ -6,6 +6,7 @@ use Exception;
 use App\Models\User;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\ReservationRequest;
@@ -37,6 +38,7 @@ class ReservationController extends Controller
     {
         $users = User::select('id','role_id','name')->where('role_id', 3)->whereNull('deleted_at')->get();
         $consultants = User::select('id','role_id','name')->where('role_id', 2)->whereNull('deleted_at')->get();
+
         return view('reservation.create',[
             'users' => $users,
             'consultants' => $consultants,
@@ -66,7 +68,7 @@ class ReservationController extends Controller
                 ]);
 
                 // Success Redirect with message
-                return redirect()->route('reservations.index')->with('success', 'Reservasi Berhasil Ditambahkan');
+                return redirect()->route('reservations.index')->with('success', 'Data Reservasi Berhasil Ditambahkan');
             }, 3);
         }catch(Exception $e){
 
@@ -74,10 +76,8 @@ class ReservationController extends Controller
             Log::error('User creation failed: ' . $e->getMessage());
 
             // Redirect with an error message
-            return redirect()->route('reservations.index')->with('error', 'Reservasi Gagal Ditambahkan');
+            return redirect()->route('reservations.index')->with('error', 'Data Reservasi Gagal Ditambahkan');
         }
-
-
     }
 
     /**
@@ -87,22 +87,77 @@ class ReservationController extends Controller
     {
         $users = User::where('role_id', 3)->whereNull('deleted_at')->get();
         $consultants = User::where('role_id', 2)->whereNull('deleted_at')->get();
-
+        // dd($users, $consultants);
+        return view('reservation.edit',[
+            'reservation' => $reservation,
+            'users' => $users,
+            'consultants' => $consultants,
+            'base_route' => self::$base_route,
+            'base_page_name' => self::$base_page_name,
+            'current_page_name' => 'Edit Reservasi'
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Reservation $reservation)
     {
-        //
+        $validatedData = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'consultant_id' => 'required|exists:users,id',
+            'reservation_date' => 'required|date',
+            'start_time' => 'required|date_format:H:i|after_or_equal:09:00|before_or_equal:15:00',
+            'end_time' => 'required|date_format:H:i',
+            'reservation_status' => 'required|in:pending,confirmed,cancelled',
+            'payment_status' => 'required|in:pending,paid,failed',
+            'total_amount' => 'nullable|numeric|min:0',
+            'cancel_reason' => 'nullable|string'
+        ]);
+
+        try{
+            return DB::transaction(function() use ($reservation, $validatedData){
+
+                // Update user with validated data
+                $reservation->update($validatedData);
+
+                // Success Redirect with message
+                return redirect()->route('reservations.index')->with('success', 'Data Reservasi Berhasil Diperbarui');
+
+            });
+        }catch(Exception $e){
+            // Log the error
+            Log::error('Reservation creation failed: ' . $e->getMessage());
+
+            // Redirect with an error message
+            return redirect()->route('reservations.index')->with('error', 'Data Reservasi Gagal Diperbarui');
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Reservation $reservation)
     {
-        //
+        $reservation->delete();
+        return redirect()->route('reservations.index')->with('success', 'Data Reservasi Berhasil Dihapus');
+    }
+
+    public function cancel(Request $request)
+    {
+        $request->validate([
+            'reservation_id' => 'required|exists:reservations,id',
+            'cancel_reason' => 'required|string'
+        ]);
+
+        $reservation = Reservation::findOrFail($request->reservation_id);
+        $reservation->reservation_status = 'cancelled';
+        $reservation->cancel_reason = $request->cancel_reason;
+        $reservation->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Reservasi telah dibatalkan, mohon hubungi kembali pengguna'
+        ]);
     }
 }

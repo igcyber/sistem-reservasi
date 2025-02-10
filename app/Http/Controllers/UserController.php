@@ -55,6 +55,7 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
+        // dd($request);
         try {
             return DB::transaction(function () use ($request) {
 

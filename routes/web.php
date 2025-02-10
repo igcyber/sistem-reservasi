@@ -19,6 +19,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::resource('users', UserController::class)->except('show');
     Route::resource('reservations', ReservationController::class)->except('show');
+    Route::post('/reservations/cancel', [ReservationController::class, 'cancel'])->name('reservations.cancel');
 });
 
 require __DIR__.'/auth.php';

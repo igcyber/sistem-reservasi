@@ -6,21 +6,23 @@
         <div class="col-xxl-12">
             <div class="card">
                 <div class="card-header align-items-center d-flex">
-                    <h4 class="card-title mb-0 flex-grow-1">Tambah Reservasi Baru</h4>
+                    <h4 class="card-title mb-0 flex-grow-1">Edit Reservasi</h4>
                 </div><!-- end card header -->
 
                 <div class="card-body">
-                    <form action="{{ route('reservations.store') }}" method="POST">
+                    <form action="{{ route('reservations.update', $reservation->id) }}" method="POST">
                         @csrf
+                        @method('PUT')
                         <div class="row">
-
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="user_id" class="form-label">Klien</label>
                                     <select id="user_id" class="form-select @error('user_id') is-invalid @enderror" name="user_id" data-choices data-choices-sorting="true">
                                         <option selected>Pilih Klien</option>
                                         @foreach($users as $user)
-                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                            <option value="{{ $user->id }}" {{ $reservation->user_id == $user->id ?  'selected' : '' }}>
+                                                {{ $user->name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                     @error('user_id')
@@ -37,7 +39,9 @@
                                     <select id="consultant_id" class="form-select @error('consultant_id') is-invalid @enderror" name="consultant_id" data-choices data-choices-sorting="true">
                                         <option selected>Pilih Konsultan</option>
                                         @foreach($consultants as $consultant)
-                                        <option value="{{ $consultant->id }}">{{ $consultant->name }}</option>
+                                            <option value="{{ $consultant->id }}" {{ $reservation->consultant_id == $consultant->id ? 'selected' : '' }}>
+                                                {{ $consultant->name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                     @error('consultant_id')
@@ -51,7 +55,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="start_time" class="form-label">Jam Mulai</label>
-                                    <input type="time" value="{{ old('start_time') }}"
+                                    <input type="time" value="{{ old('start_time', $reservation->start_time) }}"
                                            class="form-control @error('start_time') is-invalid @enderror"
                                            placeholder="Pilih Jam Mulai"
                                            name="start_time" id="start_time">
@@ -68,7 +72,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="end_time" class="form-label">Jam Selesai</label>
-                                    <input type="time" value="{{ old('end_time') }}"
+                                    <input type="time" value="{{ old('end_time', $reservation->end_time) }}"
                                            class="form-control" name="end_time" id="end_time" readonly>
                                 </div>
                             </div>
@@ -76,7 +80,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="reservation_date" class="form-label">Tanggal Reservasi </label>
-                                    <input type="date" class="form-control @error('reservation_date') is-invalid @enderror" name="reservation_date" value="{{ old('reservation_date') }}"  id="reservation_date">
+                                    <input type="date" class="form-control @error('reservation_date') is-invalid @enderror" name="reservation_date" value="{{ old('reservation_date', $reservation->reservation_date) }}"  id="reservation_date">
                                     @error('reservation_date')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -91,9 +95,9 @@
                                     <label for="reservation_status" class="form-label">Status Reservasi</label>
                                     <select id="reservation_status" class="form-select @error('reservation_status') is-invalid @enderror" name="reservation_status" data-choices data-choices-sorting="true">
                                         <option selected>Pilih Status Reservasi</option>
-                                        <option value="pending">Ditunda</option>
-                                        <option value="confirmed">Dikonfirmasi</option>
-                                        <option value="cancelled">Dibatalkan</option>
+                                        <option value="pending" {{ $reservation->reservation_status == 'pending' ? 'selected' : ''  }}>Ditunda</option>
+                                        <option value="confirmed" {{ $reservation->reservation_status == 'confirmed' ? 'selected' : ''  }}>Dikonfirmasi</option>
+                                        <option value="cancelled" {{ $reservation->reservation_status == 'cancelled' ? 'selected' : ''  }}>Dibatalkan</option>
                                     </select>
                                     @error('reservation_status')
                                     <span class="invalid-feedback" role="alert">
@@ -107,7 +111,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="total_amount" class="form-label">Total Pembayaran</label>
-                                    <input type="text" value="{{ old('total_amount') }}" class="form-control" name="total_amount" id="total_amount" readonly>
+                                    <input type="text" value="{{ old('total_amount', $reservation->total_amount) }}" class="form-control" name="total_amount" id="total_amount" readonly>
                                 </div>
                             </div>
 
@@ -116,9 +120,9 @@
                                     <label for="payment_status" class="form-label">Status Pembayaran</label>
                                     <select id="payment_status" class="form-select @error('payment_status') is-invalid @enderror" name="payment_status" data-choices data-choices-sorting="true">
                                         <option selected>Pilih Status Pembayaran</option>
-                                        <option value="pending">Ditunda</option>
-                                        <option value="paid">Dibayar</option>
-                                        <option value="failed">Digagalkan</option>
+                                        <option value="pending" {{ $reservation->payment_status == 'pending' ? 'selected' : '' }}>Ditunda</option>
+                                        <option value="paid" {{ $reservation->payment_status == 'paid' ? 'selected' : '' }}>Dibayar</option>
+                                        <option value="failed" {{ $reservation->payment_status == 'failed' ? 'selected' : '' }}>Digagalkan</option>
                                     </select>
                                     @error('payment_status')
                                     <span class="invalid-feedback" role="alert">
@@ -130,7 +134,7 @@
 
                             <div class="col-lg-12">
                                 <div class="text-end">
-                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    <button type="submit" class="btn btn-primary">Update</button>
                                 </div>
                             </div>
                             <!--end col-->
