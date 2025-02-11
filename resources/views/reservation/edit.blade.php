@@ -110,8 +110,10 @@
 
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="total_amount" class="form-label">Total Pembayaran</label>
-                                    <input type="text" value="{{ old('total_amount', $reservation->total_amount) }}" class="form-control" name="total_amount" id="total_amount" readonly>
+                                    <label for="total_amount_format" class="form-label">Total Pembayaran</label>
+                                    <input type="text" value="{{ formatRupiah($reservation->total_amount) }}" class="form-control" id="total_amount_format" readonly>
+
+                                    <input type="hidden" name="total_amount" id="total_amount" value="{{ $reservation->total_amount }}">
                                 </div>
                             </div>
 
@@ -163,10 +165,18 @@
                 document.getElementById('end_time').value = endTime;
 
                 const total = pricePerHour;
-                document.getElementById('total_amount').value = `Rp. ${total.toFixed(0)}`;
+
+                // Format sebagai mata uang Rupiah
+                const formattedTotal = new Intl.NumberFormat('id-ID').format(total);
+
+                document.getElementById('total_amount_format').value = 'Rp ' + formattedTotal;
+
+                document.getElementById('total_amount').value = total.toFixed(0);
+
             }else{
                 document.getElementById('end_time').value= "";
                 document.getElementById('total_amount').value = "";
+                document.getElementById('total_amount_format').value = "";
             }
         });
     </script>

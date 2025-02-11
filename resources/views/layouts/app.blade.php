@@ -22,8 +22,11 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
     <!--datatable responsive css-->
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" />
-
+    <!--datatable button-->
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+
+    {{-- Full calender css --}}
+    <link href=" https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css " rel="stylesheet">
 
     <!-- Layout config Js -->
     <script src="{{ asset('assets/js/layout.js') }}"></script>
@@ -130,6 +133,9 @@
     <script src="{{ asset('assets/js/app.js') }}"></script>
     {{-- Sweet alert --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {{-- Full calender --}}
+    <script src=" https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js "></script>
+
 
     {{-- toastify --}}
     @if(session('success'))

@@ -62,25 +62,29 @@
                                         <i class="ri-more-fill align-middle"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
-                                        <li>
-                                            <a class="dropdown-item edit-item-btn" href="{{ route('reservations.edit', $reservation->id) }}">
-                                                <i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <button type="button" class="dropdown-item btn-cancel" data-id="{{ $reservation->id }}">
-                                                <i class="ri-close-circle-fill align-bottom me-2 text-muted"></i> Cancel
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button class="dropdown-item remove-item-btn" onclick="confirmDelete({{ $reservation->id }})">
-                                                <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete
-                                            </button>
-                                            <form id="delete-form-{{ $reservation->id }}" action="{{ route('reservations.destroy', $reservation->id) }}" method="POST" style="display: none;">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
-                                        </li>
+                                        @if($reservation->reservation_status == 'cancelled')
+                                            <li>
+                                                <button class="dropdown-item remove-item-btn" onclick="confirmDelete({{ $reservation->id }})">
+                                                    <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete
+                                                </button>
+                                                <form id="delete-form-{{ $reservation->id }}" action="{{ route('reservations.destroy', $reservation->id) }}" method="POST" style="display: none;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                            </li>
+                                        @else
+                                            <li>
+                                                <a class="dropdown-item edit-item-btn" href="{{ route('reservations.edit', $reservation->id) }}">
+                                                    <i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <button type="button" class="dropdown-item btn-cancel" data-id="{{ $reservation->id }}">
+                                                    <i class="ri-close-circle-fill align-bottom me-2 text-muted"></i> Cancel
+                                                </button>
+                                            </li>
+                                        @endif
+
                                     </ul>
                                 </div>
                             </td>

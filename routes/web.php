@@ -17,6 +17,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/reservations/calender', function(){
+        return view('reservation.calender');
+    })->name('reservations.calender');
+    Route::get('/calendar/events', [ReservationController::class, 'getAllReservations'])->name('calendar.events');
     Route::resource('users', UserController::class)->except('show');
     Route::resource('reservations', ReservationController::class)->except('show');
     Route::post('/reservations/cancel', [ReservationController::class, 'cancel'])->name('reservations.cancel');

@@ -68,12 +68,12 @@ class ReservationController extends Controller
                 ]);
 
                 // Success Redirect with message
-                return redirect()->route('reservations.index')->with('success', 'Data Reservasi Berhasil Ditambahkan');
+                return redirect()->route('reservations.index')->with('success', 'Data Reservasi Berhasil Diperbarui');
             }, 3);
         }catch(Exception $e){
 
             // Log the error
-            Log::error('User creation failed: ' . $e->getMessage());
+            Log::error('Reservation creation failed: ' . $e->getMessage());
 
             // Redirect with an error message
             return redirect()->route('reservations.index')->with('error', 'Data Reservasi Gagal Ditambahkan');
@@ -159,5 +159,29 @@ class ReservationController extends Controller
             'success' => true,
             'message' => 'Reservasi telah dibatalkan, mohon hubungi kembali pengguna'
         ]);
+    }
+
+    public function getAllReservations()
+    {
+        $reservations = Reservation::all();
+        $events = [];
+        foreach($reservations as $reservation)
+        {
+            // Tentukan warna berdasarkan status reservasi
+            $color = match ($reservation->reservation_status) {
+                'cancelled' => '#dc3545', // Merah (danger)
+                'confirmed' => '#28a745', // Hijau (success)
+                'pending' => '#ffc107', // Kuning (warning)
+            };
+
+            $events[] = [
+                'title' => 'Reservasi atas nama ' . $reservation->user->name . ' Konsultasi dengan ' . $reservation->consultant->name,
+                'start' => $reservation->reservation_date .'T'. $reservation->start_time,
+                'end' => $reservation->reservation_date .'T'. $reservation->end_time,
+                'backgroundColor' => $color,
+                'borderColor' => $color,
+            ];
+        }
+        return response()->json($events);
     }
 }

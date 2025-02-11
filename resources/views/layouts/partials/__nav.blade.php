@@ -72,8 +72,8 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="#">
-                        <i class="ri-search-line"></i> <span data-key="t-widgets">Cek Reservasi</span>
+                    <a class="nav-link menu-link" href="{{ route('reservations.calender') }}">
+                        <i class="ri-calendar-line"></i> <span data-key="t-widgets">Kalender Reservasi</span>
                     </a>
                 </li>
                 <li class="nav-item">

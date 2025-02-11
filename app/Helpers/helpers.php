@@ -34,3 +34,18 @@ if (!function_exists('format_date')) {
         return $date ? Carbon::parse($date)->format('d-m-Y') : null;
     }
 }
+
+
+if(!function_exists('formatRupiah')) {
+ /**
+     * Format angka ke dalam format mata uang Rupiah
+     *
+     * @param  float  $amount
+     * @return string
+     */
+    function formatRupiah($amount)
+    {
+        // Format angka dengan pembatas ribuan dan prefix "Rp"
+        return "Rp " . number_format($amount, 0, ',', '.');
+    }
+}
