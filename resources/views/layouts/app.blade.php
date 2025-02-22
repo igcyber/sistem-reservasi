@@ -151,6 +151,19 @@
             },// Callback after click
         }).showToast();
     </script>
+    @elseif(session('error'))
+    <script>
+        Toastify({
+            text: "{{ session('error') }}",
+            duration: 2000,
+            close: false,
+            gravity: "top", // `top` or `bottom`
+            position: "right", // `left`, `center` or `right`
+            style: {
+                background: "#0093E9"
+            },// Callback after click
+        }).showToast();
+    </script>
     @endif
 
     {{-- sweet alert  --}}

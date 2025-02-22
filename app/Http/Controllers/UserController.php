@@ -27,9 +27,11 @@ class UserController extends Controller
                 ->with('role:id,name')
                 ->orderBy('name', 'asc')
                 ->get();
+        $roles = Role::select('id', 'name')->get();
 
         return view('user.index', [
             'users' => $users,
+            'roles' => $roles,
             'base_route' => self::$base_route,
             'base_page_name' => self::$base_page_name,
             'current_page_name' => 'Daftar Semua Pengguna'
@@ -39,16 +41,16 @@ class UserController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        $roles = Role::select('id', 'name')->get();
-        return view('user.create',[
-            'roles' => $roles,
-            'base_route' => self::$base_route,
-            'base_page_name' => self::$base_page_name,
-            'current_page_name' => 'Tambah Pengguna Baru'
-        ]);
-    }
+    // public function create()
+    // {
+    //     $roles = Role::select('id', 'name')->get();
+    //     return view('user.create',[
+    //         'roles' => $roles,
+    //         'base_route' => self::$base_route,
+    //         'base_page_name' => self::$base_page_name,
+    //         'current_page_name' => 'Tambah Pengguna Baru'
+    //     ]);
+    // }
 
     /**
      * Store a newly created resource in storage.

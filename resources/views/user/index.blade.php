@@ -7,7 +7,11 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
-                <a href="{{ route('users.create') }}" class="btn btn-primary waves-effect waves-light bx-pull-right">Tambah Pengguna</a>
+                {{-- <a href="{{ route('users.create') }}" class="btn btn-primary waves-effect waves-light bx-pull-right">Tambah Pengguna</a> --}}
+                <!-- Tambah Pengguna -->
+                <button type="button" class="btn btn-primary waves-effect waves-light bx-pull-right" data-bs-toggle="modal" data-bs-target="#createUserModal">
+                    Tambah Pengguna
+                </button>
                 <h5 class="card-title mb-0">Daftar Semua Pengguna</h5>
             </div>
             <div class="card-body">
@@ -76,6 +80,9 @@
     </div><!--end col-->
 </div><!--end row-->
 
+{{-- create user modal --}}
+@include('user._create-modal')
+
 @endsection
 
 @push('scripts')
@@ -98,5 +105,13 @@
             }
         });
     })
+
+    // Pastikan modal terbuka jika ada error pada form
+    @if($errors->any())
+        // Menampilkan modal ketika ada error
+        var myModal = new bootstrap.Modal(document.getElementById('createUserModal'));
+        myModal.show();
+    @endif
+
 </script>
 @endpush

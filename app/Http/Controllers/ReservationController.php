@@ -54,6 +54,7 @@ class ReservationController extends Controller
     public function store(ReservationRequest $request)
     {
         try{
+
             return DB::transaction(function () use ($request){
                 Reservation::create([
                     'user_id' => $request->user_id,
@@ -68,9 +69,10 @@ class ReservationController extends Controller
                 ]);
 
                 // Success Redirect with message
-                return redirect()->route('reservations.index')->with('success', 'Data Reservasi Berhasil Diperbarui');
+                return redirect()->route('reservations.index')->with('success', 'Data Reservasi Berhasil Ditambahkan');
             }, 3);
-        }catch(Exception $e){
+
+        }catch(\Throwable $e){
 
             // Log the error
             Log::error('Reservation creation failed: ' . $e->getMessage());
@@ -183,5 +185,39 @@ class ReservationController extends Controller
             ];
         }
         return response()->json($events);
+    }
+
+    /**
+     * @param mixed $id
+     * @param mixed $status
+     *
+     * @return [type]
+     */
+    public function changeReservation($id, $status)
+    {
+        if($status == 'pending')
+        {
+            Reservation::find($id)->update(['reservation_status' => 'confirmed']);
+        }elseif($status == 'confirmed'){
+            Reservation::find($id)->update(['reservation_status' => 'pending']);
+        }
+
+    }
+
+    /**
+     * @param mixed $id
+     * @param mixed $status
+     *
+     * @return [type]
+     */
+    public function changePayment($id, $status)
+    {
+        if($status == 'pending')
+        {
+            Reservation::find($id)->update(['payment_status' => 'paid']);
+        }elseif($status == 'paid'){
+            Reservation::find($id)->update(['payment_status' => 'pending']);
+        }
+
     }
 }

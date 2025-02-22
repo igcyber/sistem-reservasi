@@ -7,18 +7,18 @@ if (!function_exists('getStatusBadge')) {
     {
         $statusClasses = [
             'reservation' => [
-                'pending' => 'badge-soft-warning',
-                'confirmed' => 'badge-soft-success',
-                'cancelled' => 'badge-soft-danger',
+                'pending' => 'btn-warning',
+                'confirmed' => 'btn-success',
+                'cancelled' => 'btn-danger',
             ],
             'payment' => [
-                'pending' => 'badge-soft-warning',
-                'paid' => 'badge-soft-success',
-                'failed' => 'badge-soft-danger',
+                'pending' => 'btn-warning',
+                'paid' => 'btn-success',
+                'failed' => 'btn-danger',
             ],
         ];
 
-        return $statusClasses[$type][$status] ?? 'badge-secondary';
+        return $statusClasses[$type][$status] ?? 'btn-secondary';
     }
 }
 

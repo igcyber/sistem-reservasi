@@ -21,9 +21,11 @@ Route::middleware('auth')->group(function () {
         return view('reservation.calender');
     })->name('reservations.calender');
     Route::get('/calendar/events', [ReservationController::class, 'getAllReservations'])->name('calendar.events');
-    Route::resource('users', UserController::class)->except('show');
+    Route::resource('users', UserController::class)->except('show', 'create');
     Route::resource('reservations', ReservationController::class)->except('show');
     Route::post('/reservations/cancel', [ReservationController::class, 'cancel'])->name('reservations.cancel');
+    Route::get('/status-reservation/{Uid}/{status}', [ReservationController::class, 'changeReservation']);
+    Route::get('/status-payment/{Uid}/{status}', [ReservationController::class, 'changePayment']);
 });
 
 require __DIR__.'/auth.php';

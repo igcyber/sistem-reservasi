@@ -47,14 +47,28 @@
                                 {{ $reservation->end_time }}
                             </td>
                             <td>
-                                <span class="badge {{ getStatusBadge($reservation->reservation_status, 'reservation') }} text-uppercase">
-                                    {{ $reservation->reservation_status }}
-                                </span>
+                                @if($reservation->reservation_status === 'cancelled')
+                                    <span class="badge badge-soft-danger text-uppercase">
+                                        {{ $reservation->reservation_status }}
+                                    </span>
+                                @else
+                                    <button class="btn {{getStatusBadge($reservation->reservation_status, 'reservation') }} btn-sm btnStatusReservation text-uppercase" Uid="{{ $reservation->id }}"  status="{{ $reservation->reservation_status }}">
+                                        {{ $reservation->reservation_status }}
+                                    </button>
+                                @endif
+
+
                             </td>
                             <td>
-                                <span class="badge {{ getStatusBadge($reservation->payment_status, 'payment') }} text-uppercase">
-                                    {{ $reservation->payment_status }}
-                                </span>
+                                @if($reservation->reservation_status === 'cancelled')
+                                    <span class="badge badge-soft-danger text-uppercase">
+                                        cancelled
+                                    </span>
+                                @else
+                                    <button class="btn {{getStatusBadge($reservation->payment_status, 'payment') }} btn-sm btnStatusPayment text-uppercase" Uid="{{ $reservation->id }}" status="{{ $reservation->payment_status }}">
+                                        {{ $reservation->payment_status }}
+                                    </button>
+                                @endif
                             </td>
                             <td>
                                 <div class="dropdown d-inline-block">
@@ -84,7 +98,6 @@
                                                 </button>
                                             </li>
                                         @endif
-
                                     </ul>
                                 </div>
                             </td>
@@ -182,5 +195,42 @@
 
     });
 
+    $(".table").on('click', '.btnStatusReservation', function(){
+        var Uid = $(this).attr('Uid');
+        var status = $(this).attr('status');
+
+        $.ajax({
+            url: '/status-reservation/'+Uid+'/'+status,
+            type: 'GET',
+            success: function(){
+                Swal.fire({
+                    title: 'Proses Selesai',
+                    text: 'Status Berhasil Diperbarui',
+                    icon: 'success'
+                }).then(() => {
+                    location.reload();
+                });
+            }
+        })
+    })
+
+    $(".table").on('click', '.btnStatusPayment', function(){
+        var Uid = $(this).attr('Uid');
+        var status = $(this).attr('status');
+
+        $.ajax({
+            url: '/status-payment/'+Uid+'/'+status,
+            type: 'GET',
+            success: function(){
+                Swal.fire({
+                    title: 'Proses Selesai',
+                    text: 'Status Berhasil Diperbarui',
+                    icon: 'success'
+                }).then(() => {
+                    location.reload();
+                });
+            }
+        })
+    })
 </script>
 @endpush

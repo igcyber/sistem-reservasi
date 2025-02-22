@@ -169,10 +169,11 @@
                 const formattedTotal = new Intl.NumberFormat('id-ID').format(total);
 
                 // Tampilkan di input field dengan format Rupiah
-                document.getElementById('total_amount_format').value = 'Rp .' + formattedTotal;
+                document.getElementById('total_amount_format').value = 'Rp. ' + formattedTotal;
 
                 // Simpan nilai total dalam bentuk integer untuk disimpan ke database
                 document.getElementById('total_amount').value = total.toFixed(0);
+
             }else{
                 document.getElementById('end_time').value= "";
                 document.getElementById('total_amount').value = "";
