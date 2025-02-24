@@ -27,8 +27,6 @@ class ReservationRequest extends FormRequest
             'reservation_date' => 'required|date',
             'start_time' => 'required|date_format:H:i|after_or_equal:09:00|before_or_equal:15:00',
             'end_time' => 'required|date_format:H:i',
-            'reservation_status' => 'required|in:pending,confirmed,cancelled',
-            'payment_status' => 'required|in:pending,paid,failed',
             'total_amount' => 'nullable|numeric|min:0',
             'cancel_reason' => 'nullable|string'
         ];

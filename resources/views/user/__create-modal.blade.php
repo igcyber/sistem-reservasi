@@ -66,7 +66,7 @@
                             <div>
                                 <label for="role" class="form-label">Hak Akses</label>
                                 <select id="role" class="form-select @error('role_id') is-invalid @enderror" name="role_id" data-choices data-choices-sorting="true">
-                                    <option selected>Pilih Hak Akses</option>
+                                    <option selected disabled value="">Pilih Hak Akses</option>
                                     @foreach($roles as $role)
                                         <option value="{{ $role->id }}">{{ $role->name }}</option>
                                     @endforeach

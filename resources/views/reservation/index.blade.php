@@ -7,7 +7,10 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
-                <a href="{{ route('reservations.create') }}" class="btn btn-primary waves-effect waves-light bx-pull-right">Tambah Reservasi</a>
+                {{-- <a href="{{ route('reservations.create') }}" class="btn btn-primary waves-effect waves-light bx-pull-right">Tambah Reservasi</a> --}}
+                <button type="button" class="btn btn-primary waves-effect waves-light bx-pull-right" data-bs-toggle="modal" data-bs-target="#createReservationModal">
+                    Tambah Reservasi
+                </button>
                 <h5 class="card-title mb-0">Daftar Semua Reservasi</h5>
             </div>
             <div class="card-body">
@@ -110,6 +113,8 @@
     </div><!--end col-->
 </div><!--end row-->
 
+{{-- create user modal --}}
+@include('reservation.__create-modal')
 @endsection
 
 @push('scripts')
@@ -131,7 +136,48 @@
                 }
             }
         });
+
+        // Inisialisasi Select2 untuk dropdown
+        $('.js-example-basic-single').select2();
+
+        // Inisialisasi kembali Select2 setelah validasi gagal
+        @if ($errors->any())
+            $('#user_id').val('{{ old('user_id') }}').trigger('change');
+            $('#consultant_id').val('{{ old('consultant_id') }}').trigger('change');
+        @endif
     })
+
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('reservation_date').setAttribute('min', today);
+    document.getElementById('reservation_date').value = today;
+    const pricePerHour = 5000;
+
+    document.getElementById('start_time').addEventListener('change', function(){
+        const startTime = this.value;
+
+        if(startTime){
+            const startDate = new Date(`1970-01-01T${startTime}:00`);
+            startDate.setHours(startDate.getHours() + 1);
+            const endTime = startDate.toTimeString().slice(0, 5);
+            document.getElementById('end_time').value = endTime;
+
+            const total = pricePerHour;
+
+            // Format sebagai mata uang Rupiah
+            const formattedTotal = new Intl.NumberFormat('id-ID').format(total);
+
+            // Tampilkan di input field dengan format Rupiah
+            document.getElementById('total_amount_format').value = 'Rp. ' + formattedTotal;
+
+            // Simpan nilai total dalam bentuk integer untuk disimpan ke database
+            document.getElementById('total_amount').value = total.toFixed(0);
+
+        }else{
+            document.getElementById('end_time').value= "";
+            document.getElementById('total_amount').value = "";
+            document.getElementById('total_amount_format').value = "";
+        }
+    });
 
     $(document).on('click', '.btn-cancel', function(e){
         e.preventDefault();
@@ -232,5 +278,13 @@
             }
         })
     })
+
+      // Pastikan modal terbuka jika ada error pada form
+    @if($errors->any())
+        // Menampilkan modal ketika ada error
+        var myModal = new bootstrap.Modal(document.getElementById('createReservationModal'));
+        myModal.show();
+    @endif
+
 </script>
 @endpush

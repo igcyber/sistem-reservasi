@@ -92,45 +92,10 @@
 
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="reservation_status" class="form-label">Status Reservasi</label>
-                                    <select id="reservation_status" class="form-select @error('reservation_status') is-invalid @enderror" name="reservation_status" data-choices data-choices-sorting="true">
-                                        <option selected>Pilih Status Reservasi</option>
-                                        <option value="pending" {{ $reservation->reservation_status == 'pending' ? 'selected' : ''  }}>Ditunda</option>
-                                        <option value="confirmed" {{ $reservation->reservation_status == 'confirmed' ? 'selected' : ''  }}>Dikonfirmasi</option>
-                                        <option value="cancelled" {{ $reservation->reservation_status == 'cancelled' ? 'selected' : ''  }}>Dibatalkan</option>
-                                    </select>
-                                    @error('reservation_status')
-                                    <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
-
-
-                            <div class="col-md-6">
-                                <div class="mb-3">
                                     <label for="total_amount_format" class="form-label">Total Pembayaran</label>
                                     <input type="text" value="{{ formatRupiah($reservation->total_amount) }}" class="form-control" id="total_amount_format" readonly>
 
                                     <input type="hidden" name="total_amount" id="total_amount" value="{{ $reservation->total_amount }}">
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="payment_status" class="form-label">Status Pembayaran</label>
-                                    <select id="payment_status" class="form-select @error('payment_status') is-invalid @enderror" name="payment_status" data-choices data-choices-sorting="true">
-                                        <option selected>Pilih Status Pembayaran</option>
-                                        <option value="pending" {{ $reservation->payment_status == 'pending' ? 'selected' : '' }}>Ditunda</option>
-                                        <option value="paid" {{ $reservation->payment_status == 'paid' ? 'selected' : '' }}>Dibayar</option>
-                                        <option value="failed" {{ $reservation->payment_status == 'failed' ? 'selected' : '' }}>Digagalkan</option>
-                                    </select>
-                                    @error('payment_status')
-                                    <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
                                 </div>
                             </div>
 

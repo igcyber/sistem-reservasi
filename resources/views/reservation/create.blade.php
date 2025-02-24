@@ -86,7 +86,7 @@
                             </div>
                             <!--end col-->
 
-                            <div class="col-md-6">
+                            {{-- <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="reservation_status" class="form-label">Status Reservasi</label>
                                     <select id="reservation_status" class="form-select @error('reservation_status') is-invalid @enderror" name="reservation_status" data-choices data-choices-sorting="true">
@@ -101,7 +101,7 @@
                                         </span>
                                     @enderror
                                 </div>
-                            </div>
+                            </div> --}}
 
 
                             <div class="col-md-6">
@@ -114,7 +114,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
+                            {{-- <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="payment_status" class="form-label">Status Pembayaran</label>
                                     <select id="payment_status" class="form-select @error('payment_status') is-invalid @enderror" name="payment_status" data-choices data-choices-sorting="true">
@@ -129,7 +129,7 @@
                                         </span>
                                     @enderror
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <div class="col-lg-12">
                                 <div class="text-end">

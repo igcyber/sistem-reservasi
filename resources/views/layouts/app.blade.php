@@ -28,6 +28,9 @@
     {{-- Full calender css --}}
     <link href=" https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css " rel="stylesheet">
 
+    {{-- Select2 --}}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
     <!-- Layout config Js -->
     <script src="{{ asset('assets/js/layout.js') }}"></script>
     <!-- Bootstrap Css -->
@@ -115,6 +118,7 @@
     <!-- Dashboard init -->
     <script src="{{ asset('assets/js/pages/dashboard-ecommerce.init.js') }}"></script>
 
+    {{-- Jquery --}}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
     <!--datatable js-->
@@ -135,6 +139,9 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     {{-- Full calender --}}
     <script src=" https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js "></script>
+    <!--select2 cdn-->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="{{ asset('assets/js/pages/select2.init.js') }}"></script>
 
 
     {{-- toastify --}}

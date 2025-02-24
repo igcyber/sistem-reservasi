@@ -57,11 +57,11 @@
                 @endif
 
                 @if(Auth::user()->role_id == 2)
-                    <li class="nav-item">
-                        <a class="nav-link menu-link" href="#">
-                            <i class="ri-calendar-todo-fill"></i> <span data-key="t-widgets">Kalender</span>
-                        </a>
-                    </li>
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="{{ route('reservations.assesor.calendar') }}">
+                        <i class="ri-calendar-line"></i> <span data-key="t-widgets">Kalender Reservasi</span>
+                    </a>
+                </li>
                 @endif
 
                 @if(Auth::user()->role_id == 1)
@@ -72,7 +72,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="{{ route('reservations.calender') }}">
+                    <a class="nav-link menu-link" href="{{ route('reservations.calendar') }}">
                         <i class="ri-calendar-line"></i> <span data-key="t-widgets">Kalender Reservasi</span>
                     </a>
                 </li>
